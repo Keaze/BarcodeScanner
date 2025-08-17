@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -28,15 +29,21 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "11"
+        // Align Kotlin and Java bytecode target to avoid target-validation errors
+        jvmTarget = "21"
     }
     buildFeatures {
         compose = true
     }
+}
+
+kotlin {
+    // Use a consistent JVM toolchain for Kotlin compilation
+    jvmToolchain(21)
 }
 
 dependencies {
@@ -54,6 +61,8 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.barcode)
     implementation(libs.material3)
+    implementation(libs.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
