@@ -1,4 +1,4 @@
-package com.app.barcodescanner.scanner.presentation.camera.components
+package com.app.barcodescanner.scanner.presentation.screens.camera.components
 
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis

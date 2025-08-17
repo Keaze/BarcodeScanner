@@ -1,7 +1,6 @@
-package com.app.barcodescanner.scanner.presentation.overview
+package com.app.barcodescanner.scanner.presentation.screens.overview
 
 import android.Manifest
-import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -21,46 +20,34 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
+import com.app.barcodescanner.scanner.presentation.model.ScannerActions
 import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 
 @Composable
 fun ScannerOverviewScreen(
     modifier: Modifier = Modifier,
     hasCameraPermission: Boolean = false,
-    onStartScan: () -> Unit = {}
+    onStartScan: () -> Unit = {},
+    onPermissionChange: (ScannerActions.CameraPermissionChanged) -> Unit = {}
 ) {
     var scanResult by remember { mutableStateOf("") }
-    var hasCameraPermission by remember { mutableStateOf(false) }
-
-    val context = LocalContext.current
-
-    // Check initial permission state
-    LaunchedEffect(Unit) {
-        hasCameraPermission = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
-    }
 
     // Permission launcher
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        hasCameraPermission = isGranted
+        onPermissionChange(ScannerActions.CameraPermissionChanged(isGranted))
     }
 
     Column(

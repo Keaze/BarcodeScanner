@@ -1,4 +1,4 @@
-package com.app.barcodescanner.scanner.presentation.overview.components
+package com.app.barcodescanner.scanner.presentation.screens.overview.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

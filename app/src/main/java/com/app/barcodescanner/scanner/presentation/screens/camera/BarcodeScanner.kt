@@ -1,4 +1,4 @@
-package com.app.barcodescanner.scanner.presentation.camera
+package com.app.barcodescanner.scanner.presentation.screens.camera
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,11 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.barcodescanner.scanner.presentation.camera.components.CameraPreview
+import com.app.barcodescanner.scanner.presentation.screens.camera.components.CameraPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarcodeScannerApp(onBarcodeScanned: (String) -> Unit = {}, onStopScanning: () -> Unit = {}) {
+fun ScannerScreen(onBarcodeScanned: (String) -> Unit = {}, onStopScanning: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
