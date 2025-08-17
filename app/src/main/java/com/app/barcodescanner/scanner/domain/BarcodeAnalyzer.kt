@@ -8,13 +8,12 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 
 class BarcodeAnalyzer(
-    private val onBarcodeScanned: (String) -> Unit
+    private val onBarcodeScanned: (String) -> Unit,
+    private val barcodeFormats: List<Int> = emptyList()
 ) : ImageAnalysis.Analyzer {
 
-    private val barcodeFormats = emptyList<Int>()
-
     // Configure the scanner to only look for the formats listed in barcodeFormats
-    private val scanner = run {
+    private val scanner by lazy {
         if (barcodeFormats.isNotEmpty()) {
             val options = BarcodeScannerOptions.Builder()
                 .setBarcodeFormats(
@@ -28,6 +27,7 @@ class BarcodeAnalyzer(
             BarcodeScanning.getClient()
         }
     }
+
     private var isProcessing = false
 
     @ExperimentalGetImage
@@ -37,34 +37,33 @@ class BarcodeAnalyzer(
             return
         }
 
-        val mediaImage = imageProxy.image
-        if (mediaImage != null) {
-            isProcessing = true
-            val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+        val mediaImage = imageProxy.image ?: run {
+            imageProxy.close()
+            return
+        }
 
-            scanner.process(image)
-                .addOnSuccessListener { barcodes ->
-                    for (barcode in barcodes) {
+        isProcessing = true
+        val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+
+        scanner.process(image)
+            .addOnSuccessListener { barcodes ->
+                val value = barcodes
+                    .firstOrNull { barcode ->
                         // If no specific formats are configured, accept any detected barcode.
                         // Otherwise, only handle allowed formats.
-                        val formatAllowed = barcodeFormats.isEmpty() || (barcode.format in barcodeFormats)
-                        if (formatAllowed) {
-                            barcode.rawValue?.let { barcodeValue ->
-                                onBarcodeScanned(barcodeValue)
-                                break
-                            }
-                        }
+                        (barcodeFormats.isEmpty() || barcode.format in barcodeFormats) &&
+                                barcode.rawValue != null
                     }
-                }
-                .addOnFailureListener {
-                    // Handle any errors
-                }
-                .addOnCompleteListener {
-                    isProcessing = false
-                    imageProxy.close()
-                }
-        } else {
-            imageProxy.close()
-        }
+                    ?.rawValue
+
+                value?.let(onBarcodeScanned)
+            }
+            .addOnFailureListener {
+                // Handle any errors
+            }
+            .addOnCompleteListener {
+                isProcessing = false
+                imageProxy.close()
+            }
     }
 }
