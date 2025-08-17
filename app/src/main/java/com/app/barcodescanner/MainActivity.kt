@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.app.barcodescanner.scanner.presentation.model.BarcodeScannerViewModel
+import com.app.barcodescanner.scanner.presentation.model.ScannerActions
 import com.app.barcodescanner.scanner.presentation.model.ScannerActions.CameraPermissionChanged
 import com.app.barcodescanner.scanner.presentation.screens.camera.ScannerScreen
 import com.app.barcodescanner.scanner.presentation.screens.overview.ScannerOverviewScreen
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     composable<Routes.Scanner> {
                         ScannerScreen(
                             onBarcodeScanned = {
-                                println("Barcode scanned: $it")
+                                viewModel.onAction(ScannerActions.BarcodeScanned(it))
                                 navController.popBackStack()
                             },
                             onStopScanning = navController::popBackStack

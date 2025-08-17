@@ -1,35 +1,73 @@
 package com.app.barcodescanner.scanner.presentation.screens.overview.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.app.barcodescanner.scanner.presentation.model.ScannerActions
 import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 
 @Composable
-fun ScanOverviewBottomBar(modifier: Modifier = Modifier) {
-    Row(
+fun ScanOverviewBottomBar(
+    modifier: Modifier = Modifier,
+    hasCameraPermission: Boolean = true,
+    onStartScan: () -> Unit = {},
+    onPermissionChange: (ScannerActions.CameraPermissionChanged) -> Unit = {},
+) {
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        onPermissionChange(ScannerActions.CameraPermissionChanged(isGranted))
+    }
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .height(80.dp)
-            .background(Color.Gray),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            "Scan",
-            textAlign = TextAlign.Center,
-        )
+        Button(
+            onClick = {
+                if (hasCameraPermission) {
+                    onStartScan()
+                } else {
+                    permissionLauncher.launch(Manifest.permission.CAMERA)
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            shape = RoundedCornerShape(28.dp)
+        ) {
+            Text(
+                text = if (hasCameraPermission) "Start Scanning" else "Grant Camera Permission",
+                fontSize = 18.sp
+            )
+        }
+
+        if (!hasCameraPermission) {
+            Text(
+                text = "Camera permission is required for barcode scanning",
+                modifier = Modifier.padding(top = 8.dp),
+                color = MaterialTheme.colorScheme.error,
+                textAlign = TextAlign.Center
+            )
+        }
     }
+
 }
 
 
@@ -37,6 +75,6 @@ fun ScanOverviewBottomBar(modifier: Modifier = Modifier) {
 @Composable
 private fun ScanOverviewBottomBarPreview() {
     BarcodeScannerTheme {
-        ScanOverviewBottomBar()
+        ScanOverviewBottomBar(hasCameraPermission = true)
     }
 }

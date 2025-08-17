@@ -21,12 +21,14 @@ class BarcodeScannerViewModel : ViewModel() {
             is ScannerActions.CameraPermissionChanged -> {
                 _state.value = _state.value.copy(cameraPermission = action.isGranted)
             }
+            is ScannerActions.BarcodeScanned -> addBarcodeToHistory(action.barcode)
         }
     }
 
-}
+    private fun addBarcodeToHistory(barcode: String) {
+        val scanResultUi =
+            ScanResultUi(barcodeType = "GS1", barcodeRaw = barcode, barcodeCleanned = barcode)
+        _state.value.copy(scannedBarcodes = _state.value.scannedBarcodes + scanResultUi)
+    }
 
-
-sealed class ScannerActions {
-    data class CameraPermissionChanged(val isGranted: Boolean) : ScannerActions()
 }
