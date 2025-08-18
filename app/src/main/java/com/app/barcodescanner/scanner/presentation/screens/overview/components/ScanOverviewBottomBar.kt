@@ -25,13 +25,12 @@ import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 fun ScanOverviewBottomBar(
     modifier: Modifier = Modifier,
     hasCameraPermission: Boolean = true,
-    onStartScan: () -> Unit = {},
-    onPermissionChange: (ScannerActions.CameraPermissionChanged) -> Unit = {},
+    onAction: (ScannerActions) -> Unit = {},
 ) {
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        onPermissionChange(ScannerActions.CameraPermissionChanged(isGranted))
+        onAction(ScannerActions.CameraPermissionChanged(isGranted))
     }
     Column(
         modifier = modifier
@@ -42,7 +41,7 @@ fun ScanOverviewBottomBar(
         Button(
             onClick = {
                 if (hasCameraPermission) {
-                    onStartScan()
+                    onAction(ScannerActions.StartScan)
                 } else {
                     permissionLauncher.launch(Manifest.permission.CAMERA)
                 }

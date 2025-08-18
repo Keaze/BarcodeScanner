@@ -13,6 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.barcodescanner.scanner.data.BarcodeFormat
+import com.app.barcodescanner.scanner.presentation.model.ScanResultUi
 import com.app.barcodescanner.scanner.presentation.model.ScannerActions
 import com.app.barcodescanner.scanner.presentation.screens.overview.components.ScanOverviewBottomBar
 import com.app.barcodescanner.scanner.presentation.screens.overview.components.ScanResultList
@@ -21,10 +23,9 @@ import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 @Composable
 fun ScannerOverviewScreen(
     modifier: Modifier = Modifier,
-    scanResults: List<String> = emptyList(),
+    scanResults: List<ScanResultUi> = emptyList(),
     hasCameraPermission: Boolean = false,
-    onStartScan: () -> Unit = {},
-    onPermissionChange: (ScannerActions.CameraPermissionChanged) -> Unit = {},
+    onAction: (ScannerActions) -> Unit = {},
 ) {
 
 
@@ -44,14 +45,17 @@ fun ScannerOverviewScreen(
             ScanOverviewBottomBar(
                 modifier,
                 hasCameraPermission,
-                onStartScan,
-                onPermissionChange,
+                onAction,
             )
         }) { innerPadding ->
 
             // Scan Result Display
         if (scanResults.isNotEmpty()) {
-            ScanResultList(modifier = Modifier.padding(innerPadding), scanResults = scanResults)
+            ScanResultList(
+                modifier = Modifier.padding(innerPadding),
+                scanResults = scanResults,
+                onAction = onAction
+            )
             }
         }
     }
@@ -62,16 +66,48 @@ private fun ScannerOverviewScreenPreview() {
     BarcodeScannerTheme {
         ScannerOverviewScreen(
             hasCameraPermission = true,
-            onStartScan = {},
-            onPermissionChange = {},
+            onAction = {},
             scanResults = listOf(
-                "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
-                "Scan result 2",
-                "Scan result 2",
-                "Scan result 2",
-                "Scan result 2",
-                "Scan result 2",
-                "Scan result 3"
+                ScanResultUi(
+                    BarcodeFormat.Code128,
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
+                ),
+                ScanResultUi(
+                    BarcodeFormat.Code128,
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
+                ),
+                ScanResultUi(
+                    BarcodeFormat.Code128,
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
+                ),
+                ScanResultUi(
+                    BarcodeFormat.Code128,
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
+                ),
+                ScanResultUi(
+                    BarcodeFormat.Code128,
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
+                ),
+                ScanResultUi(
+                    BarcodeFormat.Code128,
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
+                ),
+                ScanResultUi(
+                    BarcodeFormat.Code128,
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
+                ),
+                ScanResultUi(
+                    BarcodeFormat.Code128,
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
+                    "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
+                ),
             )
         )
     }

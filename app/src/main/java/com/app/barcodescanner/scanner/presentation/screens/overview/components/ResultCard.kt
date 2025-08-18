@@ -47,6 +47,7 @@ fun ResultCard(scanResult: String = "", barcodeType: String = "", onClearResult:
                             MaterialTheme.colorScheme.surface,
                             RoundedCornerShape(8.dp)
                         )
+                        .padding(horizontal = 10.dp, vertical = 5.dp),
                 )
             }
         }
@@ -60,7 +61,8 @@ fun ResultCard(scanResult: String = "", barcodeType: String = "", onClearResult:
 private fun ResultCardPreview() {
     BarcodeScannerTheme {
         ResultCard(
-            scanResult = "Scan result 1Scan result 1Sult 1Scan result 1Scan result 1Scan result can result 1Scan result 1Scan result 1",
+            scanResult = "TTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestest",
+//            scanResult = "Test",
             barcodeType = "GS1"
         )
     }

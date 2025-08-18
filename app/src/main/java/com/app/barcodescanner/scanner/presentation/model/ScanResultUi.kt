@@ -1,7 +1,9 @@
 package com.app.barcodescanner.scanner.presentation.model
 
+import com.app.barcodescanner.scanner.data.BarcodeFormat
+
 data class ScanResultUi(
-    val barcodeType: String,
+    val barcodeType: BarcodeFormat,
     val barcodeRaw: String,
-    val barcodeCleanned: String
+    val barcodeCleaned: String
 )

@@ -1,3 +1,6 @@
 package com.app.barcodescanner.scanner.data
 
-class ScanResult
+data class ScanResult(val barcodeFormat: BarcodeFormat, val rawValue: String) {
+    val isValid
+        get() = rawValue.isNotBlank()
+}

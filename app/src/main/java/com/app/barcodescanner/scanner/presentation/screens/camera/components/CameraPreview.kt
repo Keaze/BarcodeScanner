@@ -13,12 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.app.barcodescanner.scanner.domain.BarcodeAnalyzer
 import java.util.concurrent.Executors
 
 @Composable
 fun CameraPreview(
-    onBarcodeScanned: (String) -> Unit
+    imageAnalyzer: ImageAnalysis.Analyzer,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -38,7 +37,7 @@ fun CameraPreview(
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also {
-                    it.setAnalyzer(executor, BarcodeAnalyzer(onBarcodeScanned))
+                    it.setAnalyzer(executor, imageAnalyzer)
                 }
 
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA

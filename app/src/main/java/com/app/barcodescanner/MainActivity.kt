@@ -40,16 +40,25 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController, startDestination = Routes.Home) {
                     composable<Routes.Home> {
                         ScannerOverviewScreen(
+                            scanResults = state.scannedBarcodesHistory,
                             hasCameraPermission = state.cameraPermission,
-                            onPermissionChange = viewModel::onAction,
-                            onStartScan = { navController.navigate(Routes.Scanner) })
+                            onAction = {
+                                viewModel.onAction(it)
+                                when (it) {
+                                    is ScannerActions.StartScan -> navController.navigate(Routes.Scanner)
+                                    else -> {}
+                                }
+                            })
                     }
                     composable<Routes.Scanner> {
                         ScannerScreen(
-                            onBarcodeScanned = {
-                                viewModel.onAction(ScannerActions.BarcodeScanned(it))
-                                navController.popBackStack()
-                            },
+                            analyzer = viewModel.getImageAnalyzer({
+                                navController.navigate(Routes.Home) {
+                                    popUpTo(Routes.Home) {
+                                        inclusive = true
+                                    }
+                                }
+                            }),
                             onStopScanning = navController::popBackStack
                         )
                     }
@@ -57,6 +66,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 }
 
 @Composable

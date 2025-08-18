@@ -1,5 +1,6 @@
 package com.app.barcodescanner.scanner.presentation.screens.camera
 
+import androidx.camera.core.ImageAnalysis
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,7 @@ import com.app.barcodescanner.scanner.presentation.screens.camera.components.Cam
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScannerScreen(onBarcodeScanned: (String) -> Unit = {}, onStopScanning: () -> Unit = {}) {
+fun ScannerScreen(analyzer: ImageAnalysis.Analyzer, onStopScanning: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,7 +49,7 @@ fun ScannerScreen(onBarcodeScanned: (String) -> Unit = {}, onStopScanning: () ->
                 .weight(1f)
                 .padding(vertical = 16.dp)
         ) {
-            CameraPreview(onBarcodeScanned = onBarcodeScanned)
+            CameraPreview(analyzer)
 
             // Scanning overlay
             Box(

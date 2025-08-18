@@ -3,22 +3,31 @@ package com.app.barcodescanner.scanner.domain
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import com.app.barcodescanner.scanner.data.BarcodeFormat
+import com.app.barcodescanner.scanner.data.ScanResult
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 
 class BarcodeAnalyzer(
-    private val onBarcodeScanned: (String) -> Unit,
-    private val barcodeFormats: List<Int> = emptyList()
+    var onBarcodeScanned: (ScanResult) -> Unit = {},
+    var afterScanAction: (() -> Unit) = {},
+    var barcodeFormats: List<BarcodeFormat> = emptyList(),
 ) : ImageAnalysis.Analyzer {
 
+    fun reset() {
+        hasScanned = false
+        isProcessing = false
+    }
+
+    private val barcodeFormatInts = barcodeFormats.map { it.id }
     // Configure the scanner to only look for the formats listed in barcodeFormats
     private val scanner by lazy {
-        if (barcodeFormats.isNotEmpty()) {
+        if (barcodeFormatInts.isNotEmpty()) {
             val options = BarcodeScannerOptions.Builder()
                 .setBarcodeFormats(
-                    barcodeFormats.first(),
-                    *barcodeFormats.drop(1).toIntArray()
+                    barcodeFormatInts.first(),
+                    *barcodeFormatInts.drop(1).toIntArray()
                 )
                 .build()
             BarcodeScanning.getClient(options)
@@ -29,10 +38,11 @@ class BarcodeAnalyzer(
     }
 
     private var isProcessing = false
+    private var hasScanned = false
 
     @ExperimentalGetImage
     override fun analyze(imageProxy: ImageProxy) {
-        if (isProcessing) {
+        if (isProcessing || hasScanned) {
             imageProxy.close()
             return
         }
@@ -51,12 +61,20 @@ class BarcodeAnalyzer(
                     .firstOrNull { barcode ->
                         // If no specific formats are configured, accept any detected barcode.
                         // Otherwise, only handle allowed formats.
-                        (barcodeFormats.isEmpty() || barcode.format in barcodeFormats) &&
+                        (barcodeFormats.isEmpty() || barcode.format in barcodeFormatInts) &&
                                 barcode.rawValue != null
                     }
-                    ?.rawValue
+                    ?.run {
+                        ScanResult(BarcodeFormat.toBarcodeFormat(this.format), rawValue!!)
+                    }
 
-                value?.let(onBarcodeScanned)
+                value?.let {
+                    if (!hasScanned) {
+                        hasScanned = true
+                        onBarcodeScanned(it)
+                        afterScanAction()
+                    }
+                }
             }
             .addOnFailureListener {
                 // Handle any errors
