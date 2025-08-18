@@ -7,9 +7,6 @@ plugins {
     alias(libs.plugins.hiltAndroid)
     id("kotlin-parcelize")
 }
-hilt {
-    enableAggregatingTask = false
-}
 android {
     namespace = "com.app.barcodescanner"
     compileSdk = 36
@@ -37,10 +34,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        // Align Kotlin and Java bytecode target to avoid target-validation errors
-        jvmTarget = "11"
-    }
     buildFeatures {
         compose = true
     }
@@ -49,6 +42,9 @@ android {
 kotlin {
     // Use a consistent JVM toolchain for Kotlin compilation
     jvmToolchain(11)
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+    }
 }
 
 dependencies {
