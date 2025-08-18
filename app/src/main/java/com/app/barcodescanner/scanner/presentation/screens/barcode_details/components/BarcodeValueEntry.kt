@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.barcodescanner.scanner.presentation.screens.barcode_details.shared.TextWithCopyButton
 import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 
 @Composable
@@ -44,7 +44,7 @@ fun BarcodeValueEntry(title: String, value: String, modifier: Modifier = Modifie
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                SelectionContainer { Text(text = value) }
+                TextWithCopyButton(value = value)
             }
         }
     }

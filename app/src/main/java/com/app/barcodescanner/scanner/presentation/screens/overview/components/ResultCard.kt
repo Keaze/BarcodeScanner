@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.barcodescanner.scanner.presentation.model.ScannerActions
+import com.app.barcodescanner.scanner.presentation.screens.barcode_details.shared.TextWithCopyButton
 import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 
 @Composable
@@ -44,17 +46,17 @@ fun ResultCard(
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
-            Text(
-                text = scanResult,
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .fillMaxWidth()
+            TextWithCopyButton(
+                scanResult, Modifier
                     .background(
                         MaterialTheme.colorScheme.surfaceVariant,
-                        RoundedCornerShape(8.dp)
+                        RoundedCornerShape(8.dp),
                     )
                     .padding(horizontal = 10.dp, vertical = 6.dp),
+                style = LocalTextStyle.current.copy(
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             )
         }
     }
