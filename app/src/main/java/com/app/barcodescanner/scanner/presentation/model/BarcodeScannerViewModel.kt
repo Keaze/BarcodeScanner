@@ -1,59 +1,96 @@
 package com.app.barcodescanner.scanner.presentation.model
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.data.ScanResult
 import com.app.barcodescanner.scanner.domain.BarcodeAnalyzer
+import com.app.barcodescanner.scanner.peristance.BarcodeScannerStateRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BarcodeScannerViewModel : ViewModel() {
-    private val _state = MutableStateFlow(BarcodeScannerState())
-    private val imageAnalyzer = BarcodeAnalyzer()
-    val state = _state.onStart {}
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            BarcodeScannerState()
-        )
+@HiltViewModel
+class BarcodeScannerViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val repository: BarcodeScannerStateRepository
+) : ViewModel() {
+
+    private val _state = MutableStateFlow(
+        savedStateHandle.get<BarcodeScannerState>("barcode_scanner_state") ?: BarcodeScannerState()
+    )
+    val state: StateFlow<BarcodeScannerState> = _state.asStateFlow()
+    val imageAnalyzer = BarcodeAnalyzer()
+
+    init {
+        viewModelScope.launch {
+            repository.getAppState().collect { persistentState ->
+                if (persistentState != null && _state.value == BarcodeScannerState()) {
+                    updateAppState { persistentState }
+                }
+            }
+        }
+    }
+
 
     fun onAction(action: ScannerActions) {
         when (action) {
             is ScannerActions.CameraPermissionChanged -> {
-                _state.value = _state.value.copy(cameraPermission = action.isGranted)
+//                updateAppState { it.copy(cameraPermission = action.isGranted) }
             }
+
             is ScannerActions.BarcodeScanned -> addBarcodeToHistory(action.barcode)
-            is ScannerActions.CleanList -> _state.value =
-                _state.value.copy(scannedBarcodes = emptyList())
+            is ScannerActions.CleanList -> onCleanList()
 
             is ScannerActions.StartScan -> imageAnalyzer.reset()
             is ScannerActions.ToOverview -> Unit
             is ScannerActions.OnBarcodeClick -> Unit
-            is ScannerActions.ToggleFormat -> {
-                val current = _state.value.selectedFormats.toMutableSet()
-                if (action.enabled) current.add(action.format) else current.remove(action.format)
-                _state.value = _state.value.copy(selectedFormats = current)
+            is ScannerActions.ToggleFormat -> toggleSelectedFormat(action.format, action.enabled)
+            is ScannerActions.SelectAllFormats -> updateAppState {
+                it.copy(
+                    selectedFormats = BarcodeFormat.entries.toSet()
+                )
             }
 
-            is ScannerActions.UpdateFnc1 -> {
-                _state.value = _state.value.copy(fnc1 = action.value)
-            }
+            is ScannerActions.DeselectAllFormats -> updateAppState { it.copy(selectedFormats = emptySet()) }
 
-            is ScannerActions.UpdateGs -> {
-                _state.value = _state.value.copy(gs = action.value)
-            }
+            is ScannerActions.UpdateFnc1 -> updateAppState { it.copy(fnc1 = action.value) }
+            is ScannerActions.UpdateGs -> updateAppState { it.copy(gs = action.value) }
 
-            is ScannerActions.ResetSettings -> {
-                _state.value = _state.value.copy(
-                    selectedFormats = BarcodeFormat.entries.filterNot { it == BarcodeFormat.Unknown }
-                        .toSet(),
+            is ScannerActions.ResetSettings -> updateAppState {
+                it.copy(
+                    selectedFormats = BarcodeFormat.entries.toSet(),
                     fnc1 = FNC1_DEFAULT,
                     gs = GS_DEFAULT,
                 )
             }
+        }
+
+
+    }
+
+    private fun toggleSelectedFormat(format: BarcodeFormat, enabled: Boolean) {
+        val current = _state.value.selectedFormats.toMutableSet()
+        if (enabled) current.add(format) else current.remove(format)
+        updateAppState { it.copy(selectedFormats = current) }
+    }
+
+    private fun onCleanList() {
+        updateAppState { it.copy(scannedBarcodes = emptyList()) }
+    }
+
+    private fun updateAppState(update: (BarcodeScannerState) -> BarcodeScannerState) {
+        val newState = update(_state.value)
+        _state.value = newState
+        savedStateHandle["barcode_scanner_state"] = newState
+
+        // Also save to persistent storage
+        viewModelScope.launch {
+            repository.saveAppState(newState)
         }
     }
 
@@ -62,8 +99,7 @@ class BarcodeScannerViewModel : ViewModel() {
             //TODO Add Error Message
             return
         }
-        _state.value =
-            _state.value.copy(scannedBarcodes = _state.value.scannedBarcodes + scanResult)
+        updateAppState { it.copy(scannedBarcodes = it.scannedBarcodes + scanResult) }
     }
 
     fun getImageAnalyzer(onScanComplete: (Int) -> Unit) = imageAnalyzer.apply {

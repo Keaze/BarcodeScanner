@@ -29,8 +29,7 @@ fun ScannerOverviewScreen(
     modifier: Modifier = Modifier,
     scanResults: List<ScanResultUi> = emptyList(),
     hasCameraPermission: Boolean = false,
-    selectedFormats: Set<BarcodeFormat> = BarcodeFormat.entries.filterNot { it == BarcodeFormat.Unknown }
-        .toSet(),
+    selectedFormats: Set<BarcodeFormat> = BarcodeFormat.entries.toSet(),
     fnc1: String = "",
     gs: String = "",
     onAction: (ScannerActions) -> Unit = {},

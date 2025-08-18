@@ -4,20 +4,26 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -28,11 +34,11 @@ import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.presentation.model.ScannerActions
 import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScannerSettingsDrawer(
     modifier: Modifier = Modifier,
-    selectedFormats: Set<BarcodeFormat> = BarcodeFormat.entries.filterNot { it == BarcodeFormat.Unknown }
-        .toSet(),
+    selectedFormats: Set<BarcodeFormat> = BarcodeFormat.entries.toSet(),
     fnc1: String = "",
     gs: String = "",
     onAction: (ScannerActions) -> Unit = {},
@@ -52,26 +58,58 @@ fun ScannerSettingsDrawer(
             color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Barcode Formats", fontWeight = FontWeight.SemiBold)
-        Spacer(modifier = Modifier.height(8.dp))
-        BarcodeFormat.entries.filterNot { it == BarcodeFormat.Unknown }.toSet().forEach { format ->
+        Text(
+            text = "Barcode Formats",
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = CenterVertically
+        ) {
+            Button(
+                onClick = { onAction(ScannerActions.SelectAllFormats) },
+                modifier = Modifier.defaultMinSize(minWidth = 0.dp),
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Text(text = "Select All")
+            }
+            Button(
+                onClick = { onAction(ScannerActions.DeselectAllFormats) },
+                modifier = Modifier.defaultMinSize(minWidth = 0.dp),
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Text(text = "Deselect All")
+            }
+        }
+        BarcodeFormat.entries.toSet().forEach { format ->
             val checked = selectedFormats.contains(format)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onAction(ScannerActions.ToggleFormat(format, !checked)) }
-                    .padding(vertical = 1.dp),
+                    .padding(vertical = 0.dp),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = CenterVertically,
             ) {
-                Checkbox(checked = checked, onCheckedChange = { enabled ->
-                    onAction(ScannerActions.ToggleFormat(format, enabled))
-                })
+                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+                    Checkbox(
+                        checked = checked,
+                        onCheckedChange = { enabled ->
+                            onAction(ScannerActions.ToggleFormat(format, enabled))
+                        },
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
                 Text(
                     text = format.name,
                     modifier = Modifier
-                        .padding(start = 8.dp)
-                        .padding(vertical = 1.dp),
+                        .padding(start = 6.dp)
+                        .padding(vertical = 0.dp),
                     color = MaterialTheme.colorScheme.primary
                 )
             }

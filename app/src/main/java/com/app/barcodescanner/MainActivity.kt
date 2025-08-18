@@ -8,12 +8,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -26,7 +28,9 @@ import com.app.barcodescanner.scanner.presentation.screens.camera.ScannerScreen
 import com.app.barcodescanner.scanner.presentation.screens.overview.ScannerOverviewScreen
 import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 import com.app.core.navigation.Routes
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,9 +38,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val context = LocalContext.current
-            val hasCameraPermission = checkCameraPermission(context)
-            val viewModel = viewModel<BarcodeScannerViewModel>()
-            val state by viewModel.state.collectAsStateWithLifecycle()
+            var hasCameraPermission by remember {
+                mutableStateOf(checkCameraPermission(context))
+            }
+            val viewModel = hiltViewModel<BarcodeScannerViewModel>()
+            val state by viewModel.state.collectAsState()
             viewModel.onAction(CameraPermissionChanged(hasCameraPermission))
 
             BarcodeScannerTheme {
@@ -45,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     composable<Routes.Home> {
                         ScannerOverviewScreen(
                             scanResults = state.scannedBarcodesHistory,
-                            hasCameraPermission = state.cameraPermission,
+                            hasCameraPermission = hasCameraPermission,
                             selectedFormats = state.selectedFormats,
                             fnc1 = state.fnc1,
                             gs = state.gs,
@@ -56,6 +62,7 @@ class MainActivity : ComponentActivity() {
                                     is ScannerActions.OnBarcodeClick -> navController.navigate(
                                         Routes.Details(it.barcodeId)
                                     )
+                                    is CameraPermissionChanged -> hasCameraPermission = it.isGranted
                                     else -> {}
                                 }
                             })
@@ -93,7 +100,6 @@ class MainActivity : ComponentActivity() {
 
 }
 
-@Composable
 private fun checkCameraPermission(context: Context): Boolean = ContextCompat.checkSelfPermission(
     context,
     Manifest.permission.CAMERA

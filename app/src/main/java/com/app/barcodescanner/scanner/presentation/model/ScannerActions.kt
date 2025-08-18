@@ -15,6 +15,8 @@ sealed class ScannerActions {
 
     // Settings / Drawer actions
     data class ToggleFormat(val format: BarcodeFormat, val enabled: Boolean) : ScannerActions()
+    object SelectAllFormats : ScannerActions()
+    object DeselectAllFormats : ScannerActions()
     data class UpdateFnc1(val value: String) : ScannerActions()
     data class UpdateGs(val value: String) : ScannerActions()
 }
