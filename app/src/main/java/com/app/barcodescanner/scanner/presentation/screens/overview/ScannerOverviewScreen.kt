@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,11 +51,13 @@ fun ScannerOverviewScreen(
 
             // Scan Result Display
         if (scanResults.isNotEmpty()) {
-            ScanResultList(
-                modifier = Modifier.padding(innerPadding),
-                scanResults = scanResults,
-                onAction = onAction
-            )
+            SelectionContainer {
+                ScanResultList(
+                    modifier = Modifier.padding(innerPadding),
+                    scanResults = scanResults,
+                    onAction = onAction
+                )
+            }
             }
         }
     }

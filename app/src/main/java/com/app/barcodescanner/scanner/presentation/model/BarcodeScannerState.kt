@@ -13,7 +13,8 @@ data class BarcodeScannerState(
         get() = scannedBarcodes.mapIndexed { index, scanResult -> scanResult.toUi(index) }
             .reversed()
 
-    fun getBarcodeWithIndex(index: Int): ScanResultUi? {
+    fun getBarcodeWithIndex(index: Int?): ScanResultUi? {
+        index ?: return null
         return scannedBarcodes.getOrNull(index)?.toUi(index)
     }
 }

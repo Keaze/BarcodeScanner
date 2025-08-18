@@ -1,11 +1,13 @@
 package com.app.barcodescanner.scanner.presentation.screens.barcode_details
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,6 +32,9 @@ fun BarcodeDetailsScreen(
     modifier: Modifier = Modifier,
     onAction: (ScannerActions) -> Unit = {}
 ) {
+    BackHandler {
+        onAction(ScannerActions.ToOverview)
+    }
     Scaffold(
         topBar = {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -46,15 +51,17 @@ fun BarcodeDetailsScreen(
     ) { innerPadding ->
 
         if (barcode != null) {
-            Column(modifier.padding(innerPadding)) {
-                Box(modifier = Modifier.padding(16.dp)) {
-                    Column {
-                        BarcodeInfo("Format", barcode.barcodeType)
-                        BarcodeInfo("Raw", barcode.barcodeRaw)
-                        BarcodeInfo("Clean", barcode.barcodeCleaned)
+            SelectionContainer {
+                Column(modifier.padding(innerPadding)) {
+                    Box(modifier = Modifier.padding(16.dp)) {
+                        Column {
+                            BarcodeInfo("Format", barcode.barcodeType)
+                            BarcodeInfo("Raw", barcode.barcodeRaw)
+                            BarcodeInfo("Clean", barcode.barcodeCleaned)
+                        }
                     }
+                    BarcodeDetailValueList(barcode.getBarcodeValues())
                 }
-                BarcodeDetailValueList(barcode.getBarcodeValues())
             }
         } else {
             Text(text = "No barcode selected")

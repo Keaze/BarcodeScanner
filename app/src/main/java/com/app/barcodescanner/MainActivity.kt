@@ -58,10 +58,8 @@ class MainActivity : ComponentActivity() {
                     composable<Routes.Scanner> {
                         ScannerScreen(
                             analyzer = viewModel.getImageAnalyzer({
-                                navController.navigate(Routes.Home) {
-                                    popUpTo(Routes.Home) {
-                                        inclusive = true
-                                    }
+                                state.lastScannedBarcode?.id?.let { id ->
+                                    navController.navigate(Routes.Details(id))
                                 }
                             }),
                             onStopScanning = navController::popBackStack

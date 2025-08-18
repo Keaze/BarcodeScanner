@@ -2,7 +2,6 @@ package com.app.barcodescanner.scanner.presentation.screens.barcode_details.comp
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,11 +19,9 @@ fun BarcodeInfo(name: String, value: String, modifier: Modifier = Modifier) {
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        SelectionContainer {
             Text(
                 text = value,
                 modifier = Modifier.padding(start = 5.dp)
             )
-        }
     }
 }
