@@ -14,8 +14,6 @@ data class ScanResultUi(
 
 fun ScanResult.toUi(id: Int = 0): ScanResultUi {
     // Make non-printable GS (Group Separator, ASCII 29) visible in the cleaned representation
-    val gsChar = 29.toChar().toString()
-    val cleaned = rawValue.replace(gsChar, "<GS>")
     return ScanResultUi(
         id = id,
         barcodeType = barcodeFormat.name,

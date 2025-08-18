@@ -5,6 +5,8 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.data.ScanResult
+import com.app.barcodescanner.scanner.presentation.model.FNC1_DEFAULT
+import com.app.barcodescanner.scanner.presentation.model.GS_DEFAULT
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -13,6 +15,8 @@ import com.google.mlkit.vision.common.InputImage
 class BarcodeAnalyzer(
     var onBarcodeScanned: (ScanResult) -> Unit = {},
     var barcodeFormats: Set<BarcodeFormat> = emptySet(),
+    var fnc1: String = FNC1_DEFAULT,
+    var gs: String = GS_DEFAULT
 ) : ImageAnalysis.Analyzer {
 
     fun reset() {
@@ -70,7 +74,12 @@ class BarcodeAnalyzer(
                     ?.run {
                         val gsChar = 29.toChar().toString()
                         val rawWithVisibleGS = rawValue!!.replace(gsChar, "<GS>")
-                        ScanResult(BarcodeFormat.toBarcodeFormat(this.format), rawWithVisibleGS)
+                        val raw = rawValue!!.substring(fnc1.length)
+                        ScanResult(
+                            BarcodeFormat.toBarcodeFormat(this.format),
+                            rawWithVisibleGS,
+                            raw
+                        )
                     }
 
                 value?.let {
