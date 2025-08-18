@@ -41,6 +41,7 @@ fun ScannerSettingsDrawer(
     Column(
         modifier = Modifier
             .padding(16.dp)
+            .padding(top = 32.dp)
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
@@ -68,7 +69,9 @@ fun ScannerSettingsDrawer(
                 })
                 Text(
                     text = format.name,
-                    modifier = Modifier.padding(start = 8.dp),
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .padding(vertical = 1.dp),
                     color = MaterialTheme.colorScheme.primary
                 )
             }

@@ -29,13 +29,14 @@ fun ResultCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 1.dp)
-            .background(MaterialTheme.colorScheme.background, RoundedCornerShape(8.dp)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            .padding(vertical = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         onClick = { onAction(ScannerActions.OnBarcodeClick(barcodeId)) }
     ) {
         Column(
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier.padding(12.dp)
         ) {
             Text(
                 text = barcodeType,
@@ -45,15 +46,15 @@ fun ResultCard(
             )
             Text(
                 text = scanResult,
-                fontSize = 10.sp,
+                fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        MaterialTheme.colorScheme.surface,
+                        MaterialTheme.colorScheme.surfaceVariant,
                         RoundedCornerShape(8.dp)
                     )
-                    .padding(horizontal = 10.dp, vertical = 5.dp),
+                    .padding(horizontal = 10.dp, vertical = 6.dp),
             )
         }
     }

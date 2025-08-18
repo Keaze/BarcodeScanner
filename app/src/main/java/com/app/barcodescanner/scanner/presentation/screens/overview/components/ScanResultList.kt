@@ -16,10 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.presentation.model.ScanResultUi
 import com.app.barcodescanner.scanner.presentation.model.ScannerActions
@@ -38,17 +36,17 @@ fun ScanResultList(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Scan Result:",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
+            text = "Scan Results",
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedButton(
             onClick = { onAction(ScannerActions.CleanList) },
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(top = 8.dp),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp)
         ) {
-            Text("Clear Result")
+            Text("Clear Results")
         }
         // Make the list scroll within the content area
         LazyColumn(
