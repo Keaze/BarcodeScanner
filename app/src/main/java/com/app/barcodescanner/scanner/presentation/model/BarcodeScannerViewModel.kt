@@ -2,6 +2,7 @@ package com.app.barcodescanner.scanner.presentation.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.data.ScanResult
 import com.app.barcodescanner.scanner.domain.BarcodeAnalyzer
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +32,28 @@ class BarcodeScannerViewModel : ViewModel() {
             is ScannerActions.StartScan -> imageAnalyzer.reset()
             is ScannerActions.ToOverview -> Unit
             is ScannerActions.OnBarcodeClick -> Unit
+            is ScannerActions.ToggleFormat -> {
+                val current = _state.value.selectedFormats.toMutableSet()
+                if (action.enabled) current.add(action.format) else current.remove(action.format)
+                _state.value = _state.value.copy(selectedFormats = current)
+            }
+
+            is ScannerActions.UpdateFnc1 -> {
+                _state.value = _state.value.copy(fnc1 = action.value)
+            }
+
+            is ScannerActions.UpdateGs -> {
+                _state.value = _state.value.copy(gs = action.value)
+            }
+
+            is ScannerActions.ResetSettings -> {
+                _state.value = _state.value.copy(
+                    selectedFormats = BarcodeFormat.entries.filterNot { it == BarcodeFormat.Unknown }
+                        .toSet(),
+                    fnc1 = FNC1_DEFAULT,
+                    gs = GS_DEFAULT,
+                )
+            }
         }
     }
 
@@ -43,9 +66,12 @@ class BarcodeScannerViewModel : ViewModel() {
             _state.value.copy(scannedBarcodes = _state.value.scannedBarcodes + scanResult)
     }
 
-    fun getImageAnalyzer(onScanComplete: () -> Unit) = imageAnalyzer.apply {
-        barcodeFormats
-        onBarcodeScanned = ::addBarcodeToHistory
-        afterScanAction = onScanComplete
+    fun getImageAnalyzer(onScanComplete: (Int) -> Unit) = imageAnalyzer.apply {
+        barcodeFormats = _state.value.selectedFormats
+        // Note: Analyzer's internal format configuration is static after initialization in current implementation.
+        onBarcodeScanned = { scanResult ->
+            addBarcodeToHistory(scanResult)
+            onScanComplete(_state.value.scannedBarcodes.size - 1)
+        }
     }
 }

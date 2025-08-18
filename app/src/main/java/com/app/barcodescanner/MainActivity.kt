@@ -44,6 +44,9 @@ class MainActivity : ComponentActivity() {
                         ScannerOverviewScreen(
                             scanResults = state.scannedBarcodesHistory,
                             hasCameraPermission = state.cameraPermission,
+                            selectedFormats = state.selectedFormats,
+                            fnc1 = state.fnc1,
+                            gs = state.gs,
                             onAction = {
                                 viewModel.onAction(it)
                                 when (it) {
@@ -57,11 +60,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<Routes.Scanner> {
                         ScannerScreen(
-                            analyzer = viewModel.getImageAnalyzer({
-                                state.lastScannedBarcode?.id?.let { id ->
-                                    navController.navigate(Routes.Details(id))
-                                }
-                            }),
+                            analyzer = viewModel.getImageAnalyzer { index ->
+                                navController.navigate(Routes.Details(index))
+                            },
                             onStopScanning = navController::popBackStack
                         )
                     }
