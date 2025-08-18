@@ -8,8 +8,12 @@ data class BarcodeScannerState(
     val cameraPermission: Boolean = false
 ) {
     val lastScannedBarcode
-        get() = scannedBarcodes.lastOrNull()
+        get() = scannedBarcodes.lastOrNull()?.toUi(scannedBarcodes.size - 1)
     val scannedBarcodesHistory
-        get() = scannedBarcodes.map { ScanResultUi(it.barcodeFormat, it.rawValue, it.rawValue) }
+        get() = scannedBarcodes.mapIndexed { index, scanResult -> scanResult.toUi(index) }
             .reversed()
+
+    fun getBarcodeWithIndex(index: Int): ScanResultUi? {
+        return scannedBarcodes.getOrNull(index)?.toUi(index)
+    }
 }

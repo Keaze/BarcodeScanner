@@ -16,16 +16,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.barcodescanner.scanner.presentation.model.ScannerActions
 import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 
 @Composable
-fun ResultCard(scanResult: String = "", barcodeType: String = "", onClearResult: () -> Unit = {}) {
+fun ResultCard(
+    modifier: Modifier = Modifier,
+    barcodeId: Int = 0,
+    scanResult: String = "",
+    barcodeType: String = "",
+    onAction: (ScannerActions) -> Unit = {}
+) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 1.dp)
             .background(MaterialTheme.colorScheme.background, RoundedCornerShape(8.dp)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        onClick = { onAction(ScannerActions.OnBarcodeClick(barcodeId)) }
     ) {
         Column(
             modifier = Modifier.padding(10.dp)

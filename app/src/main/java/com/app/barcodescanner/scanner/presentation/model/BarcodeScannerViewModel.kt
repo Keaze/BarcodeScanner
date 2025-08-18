@@ -29,6 +29,8 @@ class BarcodeScannerViewModel : ViewModel() {
                 _state.value.copy(scannedBarcodes = emptyList())
 
             is ScannerActions.StartScan -> imageAnalyzer.reset()
+            is ScannerActions.ToOverview -> Unit
+            is ScannerActions.OnBarcodeClick -> Unit
         }
     }
 

@@ -28,7 +28,6 @@ fun ScannerOverviewScreen(
     onAction: (ScannerActions) -> Unit = {},
 ) {
 
-
     Scaffold(
         topBar = {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -69,42 +68,42 @@ private fun ScannerOverviewScreenPreview() {
             onAction = {},
             scanResults = listOf(
                 ScanResultUi(
-                    BarcodeFormat.Code128,
+                    BarcodeFormat.Code128.name,
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
                 ),
                 ScanResultUi(
-                    BarcodeFormat.Code128,
+                    BarcodeFormat.Code128.name,
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
                 ),
                 ScanResultUi(
-                    BarcodeFormat.Code128,
+                    BarcodeFormat.Code128.name,
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
                 ),
                 ScanResultUi(
-                    BarcodeFormat.Code128,
+                    BarcodeFormat.Code128.name,
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
                 ),
                 ScanResultUi(
-                    BarcodeFormat.Code128,
+                    BarcodeFormat.Code128.name,
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
                 ),
                 ScanResultUi(
-                    BarcodeFormat.Code128,
+                    BarcodeFormat.Code128.name,
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
                 ),
                 ScanResultUi(
-                    BarcodeFormat.Code128,
+                    BarcodeFormat.Code128.name,
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
                 ),
                 ScanResultUi(
-                    BarcodeFormat.Code128,
+                    BarcodeFormat.Code128.name,
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1",
                     "Scan result 1Scan result 1Scan result 1Scan result 1Scan result 1"
                 ),

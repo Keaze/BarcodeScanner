@@ -1,5 +1,8 @@
 package com.app.barcodescanner.scanner.data
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class BarcodeFormat(val id: Int) {
     Unknown(-1),
     Code128(1),

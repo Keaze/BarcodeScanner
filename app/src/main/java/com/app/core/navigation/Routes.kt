@@ -10,5 +10,5 @@ sealed interface Routes {
     object Scanner : Routes
 
     @Serializable
-    data class Details(val barcode: String) : Routes
+    data class Details(val barcodeId: Int) : Routes
 }

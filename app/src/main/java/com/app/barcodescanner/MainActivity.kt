@@ -16,9 +16,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.app.barcodescanner.scanner.presentation.model.BarcodeScannerViewModel
 import com.app.barcodescanner.scanner.presentation.model.ScannerActions
 import com.app.barcodescanner.scanner.presentation.model.ScannerActions.CameraPermissionChanged
+import com.app.barcodescanner.scanner.presentation.screens.barcode_details.BarcodeDetailsScreen
 import com.app.barcodescanner.scanner.presentation.screens.camera.ScannerScreen
 import com.app.barcodescanner.scanner.presentation.screens.overview.ScannerOverviewScreen
 import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
@@ -46,6 +48,9 @@ class MainActivity : ComponentActivity() {
                                 viewModel.onAction(it)
                                 when (it) {
                                     is ScannerActions.StartScan -> navController.navigate(Routes.Scanner)
+                                    is ScannerActions.OnBarcodeClick -> navController.navigate(
+                                        Routes.Details(it.barcodeId)
+                                    )
                                     else -> {}
                                 }
                             })
@@ -60,6 +65,24 @@ class MainActivity : ComponentActivity() {
                                 }
                             }),
                             onStopScanning = navController::popBackStack
+                        )
+                    }
+                    composable<Routes.Details> { backStackEntry ->
+                        val details = backStackEntry.toRoute<Routes.Details>()
+                        BarcodeDetailsScreen(
+                            barcode = state.getBarcodeWithIndex(details.barcodeId),
+                            onAction = {
+                                viewModel.onAction(it)
+                                when (it) {
+                                    is ScannerActions.ToOverview -> navController.navigate(Routes.Home) {
+                                        popUpTo(
+                                            Routes.Home
+                                        ) { inclusive = true }
+                                    }
+
+                                    else -> {}
+                                }
+                            }
                         )
                     }
                 }
