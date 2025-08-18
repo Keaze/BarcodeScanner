@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.data.ScanResult
 import kotlinx.parcelize.Parcelize
+import java.util.UUID
 
 const val FNC1_DEFAULT = "]C1"
 const val GS_DEFAULT = "<GS>"
@@ -16,13 +17,13 @@ data class BarcodeScannerState(
     val gs: String = GS_DEFAULT
 ) : Parcelable {
     val lastScannedBarcode
-        get() = scannedBarcodes.lastOrNull()?.toUi(scannedBarcodes.size - 1)
+        get() = scannedBarcodes.lastOrNull()?.toUi()
     val scannedBarcodesHistory
-        get() = scannedBarcodes.mapIndexed { index, scanResult -> scanResult.toUi(index) }
+        get() = scannedBarcodes.map { it.toUi() }
             .reversed()
 
-    fun getBarcodeWithIndex(index: Int?): ScanResultUi? {
+    fun getBarcodeWithId(index: String?): ScanResultUi? {
         index ?: return null
-        return scannedBarcodes.getOrNull(index)?.toUi(index)
+        return scannedBarcodes.find { it.id == UUID.fromString(index) }?.toUi()
     }
 }

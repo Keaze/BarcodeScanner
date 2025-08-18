@@ -11,6 +11,9 @@ import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import java.util.UUID
+
+private const val GROUP_SEPARATOR_STRING = 29.toChar().toString()
 
 class BarcodeAnalyzer(
     var onBarcodeScanned: (ScanResult) -> Unit = {},
@@ -72,10 +75,13 @@ class BarcodeAnalyzer(
                                 barcode.rawValue != null
                     }
                     ?.run {
-                        val gsChar = 29.toChar().toString()
-                        val rawWithVisibleGS = rawValue!!.replace(gsChar, "<GS>")
-                        val raw = rawValue!!.substring(fnc1.length)
+                        val rawWithVisibleGS = rawValue!!.replace(GROUP_SEPARATOR_STRING, "<GS>")
+                        val raw =
+                            if (rawValue!!.startsWith(fnc1.substring(0, 1))) rawValue!!.substring(
+                                fnc1.length
+                            ) else rawValue!!
                         ScanResult(
+                            id = UUID.randomUUID(),
                             BarcodeFormat.toBarcodeFormat(this.format),
                             rawWithVisibleGS,
                             raw

@@ -23,7 +23,7 @@ import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 @Composable
 fun ResultCard(
     modifier: Modifier = Modifier,
-    barcodeId: Int = 0,
+    barcodeId: String = "",
     scanResult: String = "",
     barcodeType: String = "",
     onAction: (ScannerActions) -> Unit = {}

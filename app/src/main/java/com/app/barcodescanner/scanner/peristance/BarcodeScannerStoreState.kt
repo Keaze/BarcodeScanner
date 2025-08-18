@@ -35,4 +35,5 @@ fun BarcodeScannerStoreState.toAppState(): BarcodeScannerState {
 }
 
 fun ScanResult.toStore() = ScanResultStore(barcodeFormat, rawValue, cleaned)
-fun ScanResultStore.toData() = ScanResult(barcodeFormat, rawValue, cleaned)
+fun ScanResultStore.toData() =
+    ScanResult(barcodeFormat = barcodeFormat, rawValue = rawValue, cleaned = cleaned)

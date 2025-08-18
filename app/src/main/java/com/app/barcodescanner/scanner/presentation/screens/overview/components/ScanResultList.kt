@@ -58,6 +58,7 @@ fun ScanResultList(
                     scanResult = barcode.barcodeCleaned,
                     barcodeType = barcode.barcodeType,
                     onAction = onAction,
+                    barcodeId = barcode.id
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }

@@ -11,7 +11,7 @@ sealed class ScannerActions {
     object StartScan : ScannerActions()
     object CleanList : ScannerActions()
     object ResetSettings : ScannerActions()
-    data class OnBarcodeClick(val barcodeId: Int) : ScannerActions()
+    data class OnBarcodeClick(val barcodeId: String) : ScannerActions()
 
     // Settings / Drawer actions
     data class ToggleFormat(val format: BarcodeFormat, val enabled: Boolean) : ScannerActions()

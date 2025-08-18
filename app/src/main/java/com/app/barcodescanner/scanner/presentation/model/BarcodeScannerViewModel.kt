@@ -102,12 +102,12 @@ class BarcodeScannerViewModel @Inject constructor(
         updateAppState { it.copy(scannedBarcodes = it.scannedBarcodes + scanResult) }
     }
 
-    fun getImageAnalyzer(onScanComplete: (Int) -> Unit) = imageAnalyzer.apply {
+    fun getImageAnalyzer(onScanComplete: (String) -> Unit) = imageAnalyzer.apply {
         barcodeFormats = _state.value.selectedFormats
         // Note: Analyzer's internal format configuration is static after initialization in current implementation.
         onBarcodeScanned = { scanResult ->
             addBarcodeToHistory(scanResult)
-            onScanComplete(_state.value.scannedBarcodes.size - 1)
+            onScanComplete(scanResult.id.toString())
         }
     }
 }

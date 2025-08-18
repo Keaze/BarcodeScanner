@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                     composable<Routes.Details> { backStackEntry ->
                         val details = backStackEntry.toRoute<Routes.Details>()
                         BarcodeDetailsScreen(
-                            barcode = state.getBarcodeWithIndex(details.barcodeId),
+                            barcode = state.getBarcodeWithId(details.barcodeId),
                             onAction = {
                                 viewModel.onAction(it)
                                 when (it) {

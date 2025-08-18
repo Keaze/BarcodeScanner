@@ -92,7 +92,7 @@ fun ScannerSettingsDrawer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onAction(ScannerActions.ToggleFormat(format, !checked)) }
-                    .padding(vertical = 0.dp),
+                    .padding(vertical = 0.dp, horizontal = 8.dp),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = CenterVertically,
             ) {
@@ -109,7 +109,7 @@ fun ScannerSettingsDrawer(
                     text = format.name,
                     modifier = Modifier
                         .padding(start = 6.dp)
-                        .padding(vertical = 0.dp),
+                        .padding(vertical = 1.dp),
                     color = MaterialTheme.colorScheme.primary
                 )
             }

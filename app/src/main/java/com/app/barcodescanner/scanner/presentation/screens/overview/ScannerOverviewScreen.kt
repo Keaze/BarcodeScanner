@@ -3,6 +3,7 @@ package com.app.barcodescanner.scanner.presentation.screens.overview
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
@@ -51,7 +52,7 @@ fun ScannerOverviewScreen(
     ) {
         Scaffold(
             topBar = {
-                androidx.compose.material3.CenterAlignedTopAppBar(
+                CenterAlignedTopAppBar(
                     title = {
                         Text(
                             text = "Barcode Scanner",
