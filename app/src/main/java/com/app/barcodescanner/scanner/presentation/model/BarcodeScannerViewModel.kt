@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.data.ScanResult
 import com.app.barcodescanner.scanner.domain.BarcodeAnalyzer
+import com.app.barcodescanner.scanner.domain.GS1Parser
 import com.app.barcodescanner.scanner.peristance.BarcodeScannerStateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +26,7 @@ class BarcodeScannerViewModel @Inject constructor(
     )
     val state: StateFlow<BarcodeScannerState> = _state.asStateFlow()
     val imageAnalyzer = BarcodeAnalyzer()
+    val parser = GS1Parser()
 
     init {
         viewModelScope.launch {
