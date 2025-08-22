@@ -19,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.barcodescanner.R
 import com.app.barcodescanner.scanner.presentation.screens.camera.components.CameraPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,7 +38,7 @@ fun ScannerScreen(analyzer: ImageAnalysis.Analyzer, onStopScanning: () -> Unit =
     ) {
         // App Title
         Text(
-            text = "Barcode Scanner",
+            text = stringResource(R.string.barcode_scanner_title),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
@@ -66,7 +68,7 @@ fun ScannerScreen(analyzer: ImageAnalysis.Analyzer, onStopScanning: () -> Unit =
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
-                        text = "Position barcode in the center\nof the camera view",
+                        text = stringResource(R.string.scanner_overlay_message),
                         modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp
@@ -84,7 +86,7 @@ fun ScannerScreen(analyzer: ImageAnalysis.Analyzer, onStopScanning: () -> Unit =
                     containerColor = MaterialTheme.colorScheme.error
                 )
             ) {
-                Text("Stop Scanning")
+                Text(stringResource(R.string.stop_scanning))
             }
         }
     }

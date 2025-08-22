@@ -26,10 +26,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.barcodescanner.R
 import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.presentation.model.ScannerActions
 import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
@@ -52,14 +54,14 @@ fun ScannerSettingsDrawer(
             .verticalScroll(rememberScrollState())
     ) {
         Text(
-            text = "Settings",
+            text = stringResource(R.string.settings_title),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Barcode Formats",
+            text = stringResource(R.string.barcode_formats),
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary
         )
@@ -76,14 +78,14 @@ fun ScannerSettingsDrawer(
                 modifier = Modifier.defaultMinSize(minWidth = 0.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
             ) {
-                Text(text = "Select All")
+                Text(text = stringResource(R.string.select_all))
             }
             Button(
                 onClick = { onAction(ScannerActions.DeselectAllFormats) },
                 modifier = Modifier.defaultMinSize(minWidth = 0.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
             ) {
-                Text(text = "Deselect All")
+                Text(text = stringResource(R.string.deselect_all))
             }
         }
         BarcodeFormat.entries.toSet().forEach { format ->
@@ -116,7 +118,7 @@ fun ScannerSettingsDrawer(
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "FNC1",
+            text = stringResource(R.string.fnc1_label),
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary
         )
@@ -126,11 +128,11 @@ fun ScannerSettingsDrawer(
             onValueChange = { onAction(ScannerActions.UpdateFnc1(it)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            placeholder = { Text(text = "Enter FNC1") },
+            placeholder = { Text(text = stringResource(R.string.enter_fnc1)) },
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
-            text = "GS",
+            text = stringResource(R.string.gs_label),
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary
         )
@@ -140,7 +142,7 @@ fun ScannerSettingsDrawer(
             onValueChange = { onAction(ScannerActions.UpdateGs(it)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            placeholder = { Text(text = "Enter GS") }
+            placeholder = { Text(text = stringResource(R.string.enter_gs)) }
         )
         Spacer(modifier = Modifier.height(24.dp))
         Button(
@@ -151,7 +153,7 @@ fun ScannerSettingsDrawer(
             shape = RoundedCornerShape(28.dp)
         ) {
             Text(
-                text = "Reset",
+                text = stringResource(R.string.reset),
                 fontSize = 18.sp
             )
         }

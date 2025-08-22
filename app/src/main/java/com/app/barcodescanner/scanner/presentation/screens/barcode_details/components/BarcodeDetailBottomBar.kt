@@ -10,8 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.barcodescanner.R
 import com.app.barcodescanner.scanner.presentation.model.ScannerActions
 
 @Composable
@@ -30,7 +32,7 @@ fun BarcodeDetailBottomBar(modifier: Modifier = Modifier, onAction: (ScannerActi
             shape = RoundedCornerShape(28.dp)
         ) {
             Text(
-                text = "Back to Overview",
+                text = stringResource(R.string.back_to_overview),
                 fontSize = 18.sp
             )
         }

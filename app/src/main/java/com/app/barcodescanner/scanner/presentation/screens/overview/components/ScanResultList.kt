@@ -16,8 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.app.barcodescanner.R
 import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.presentation.model.ScanResultUi
 import com.app.barcodescanner.scanner.presentation.model.ScannerActions
@@ -36,7 +38,7 @@ fun ScanResultList(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Scan Results",
+            text = stringResource(R.string.scan_results_title),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -46,7 +48,7 @@ fun ScanResultList(
             modifier = Modifier.padding(top = 8.dp),
             shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp)
         ) {
-            Text("Clear Results")
+            Text(stringResource(R.string.clear_results))
         }
         // Make the list scroll within the content area
         LazyColumn(

@@ -14,10 +14,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.barcodescanner.R
 import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.presentation.model.ScanResultUi
 import com.app.barcodescanner.scanner.presentation.model.ScannerActions
@@ -39,7 +41,7 @@ fun BarcodeDetailsScreen(
         topBar = {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Text(
-                    text = "Barcode Details",
+                    text = stringResource(R.string.barcode_details_title),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
@@ -55,11 +57,14 @@ fun BarcodeDetailsScreen(
                 Column(modifier.padding(innerPadding)) {
                     Box(modifier = Modifier.padding(16.dp)) {
                         Column {
-                            BarcodeInfo("Format", barcode.barcodeType)
-                            BarcodeInfo("Raw", barcode.barcodeRaw)
-                            BarcodeInfo("Clean", barcode.barcodeCleaned)
+                            BarcodeInfo(stringResource(R.string.format_label), barcode.barcodeType)
+                            BarcodeInfo(stringResource(R.string.raw_label), barcode.barcodeRaw)
+                            BarcodeInfo(
+                                stringResource(R.string.clean_label),
+                                barcode.barcodeCleaned
+                            )
                             barcode.parseError?.let {
-                                BarcodeInfo("Parse Error", it)
+                                BarcodeInfo(stringResource(R.string.parse_error_label), it)
                             }
                         }
                     }
@@ -70,7 +75,7 @@ fun BarcodeDetailsScreen(
                 }
             }
         } else {
-            Text(text = "No barcode selected")
+            Text(text = stringResource(R.string.no_barcode_selected))
         }
     }
 }

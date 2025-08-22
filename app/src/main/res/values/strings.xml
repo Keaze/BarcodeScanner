@@ -1,3 +1,40 @@
 <resources>
     <string name="app_name">BarcodeScanner</string>
+
+    <!-- General Titles -->
+    <string name="barcode_scanner_title">Barcode Scanner</string>
+    <string name="barcode_details_title">Barcode Details</string>
+    <string name="settings_title">Settings</string>
+    <string name="scan_results_title">Scan Results</string>
+
+    <!-- Buttons / Actions -->
+    <string name="select_all">Select All</string>
+    <string name="deselect_all">Deselect All</string>
+    <string name="reset">Reset</string>
+    <string name="start_scanning">Start Scanning</string>
+    <string name="grant_camera_permission">Grant Camera Permission</string>
+    <string name="stop_scanning">Stop Scanning</string>
+    <string name="clear_results">Clear Results</string>
+    <string name="back_to_overview">Back to Overview</string>
+
+    <!-- Settings -->
+    <string name="barcode_formats">Barcode Formats</string>
+    <string name="fnc1_label">FNC1</string>
+    <string name="enter_fnc1">Enter FNC1</string>
+    <string name="gs_label">GS</string>
+    <string name="enter_gs">Enter GS</string>
+
+    <!-- Scanner overlay / messages -->
+    <string name="scanner_overlay_message">Position barcode in the center\nof the camera view</string>
+    <string name="camera_permission_required">Camera permission is required for barcode scanning</string>
+
+    <!-- Details labels -->
+    <string name="format_label">Format</string>
+    <string name="raw_label">Raw</string>
+    <string name="clean_label">Clean</string>
+    <string name="parse_error_label">Parse Error</string>
+
+    <!-- Misc -->
+    <string name="no_barcode_selected">No barcode selected</string>
+    <string name="copy">Copy</string>
 </resources>
