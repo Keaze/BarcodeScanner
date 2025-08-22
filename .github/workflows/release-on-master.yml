@@ -1,0 +1,83 @@
+name: Release on master updates
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create_release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # needed to fetch tags
+
+      - name: Determine next tag
+        id: next_tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --tags --quiet
+          last_tag=$(git tag --list 'v*' --sort=-v:refname | head -n1)
+          if [ -z "$last_tag" ]; then
+            next_tag="v0.1.0"
+          else
+            ver=${last_tag#v}
+            IFS='.' read -r major minor patch <<< "$ver"
+            if [ -z "${major}" ] || [ -z "${minor}" ] || [ -z "${patch}" ]; then
+              echo "::error::Last tag '$last_tag' is not in vMAJOR.MINOR.PATCH format" >&2
+              exit 1
+            fi
+            patch=$((patch+1))
+            next_tag="v${major}.${minor}.${patch}"
+          fi
+          echo "Next tag: $next_tag"
+          echo "next_tag=$next_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Create and push tag (if not exists)
+        id: push_tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="${{ steps.next_tag.outputs.next_tag }}"
+          if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+            echo "Tag ${tag} already exists locally; ensuring it is pushed."
+          else
+            git tag "${tag}"
+          fi
+          # Push tag if not present on origin
+          if git ls-remote --tags origin | grep -q "refs/tags/${tag}$"; then
+            echo "Tag ${tag} already exists on origin."
+            echo "created=false" >> "$GITHUB_OUTPUT"
+          else
+            git push origin "${tag}"
+            echo "created=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create GitHub Release
+        if: ${{ steps.push_tag.outputs.created == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.next_tag.outputs.next_tag }}
+          name: Release ${{ steps.next_tag.outputs.next_tag }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Ensure release exists (idempotent)
+        if: ${{ steps.push_tag.outputs.created != 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.next_tag.outputs.next_tag }}
+          name: Release ${{ steps.next_tag.outputs.next_tag }}
+          generate_release_notes: true
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
