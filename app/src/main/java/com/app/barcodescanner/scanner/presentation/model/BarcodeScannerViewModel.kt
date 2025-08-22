@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.data.ScanResult
 import com.app.barcodescanner.scanner.domain.BarcodeAnalyzer
+import com.app.barcodescanner.scanner.domain.BarcodeAnalyzerFactory
+import com.app.barcodescanner.scanner.domain.GS1ParserFactory
 import com.app.barcodescanner.scanner.peristance.BarcodeScannerStateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +21,9 @@ import javax.inject.Inject
 @HiltViewModel
 class BarcodeScannerViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val repository: BarcodeScannerStateRepository
+    private val repository: BarcodeScannerStateRepository,
+    private val parserFactory: GS1ParserFactory,
+    private val analyzerFactory: BarcodeAnalyzerFactory
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -27,7 +31,7 @@ class BarcodeScannerViewModel @Inject constructor(
     )
     val state: StateFlow<BarcodeScannerState> = _state.asStateFlow()
     val imageAnalyzer = BarcodeAnalyzer()
-    val parser = GS1Scanner.getDefaultParser().orThrow()
+    var parser: GS1Scanner? = null
 
     init {
         viewModelScope.launch {
@@ -43,7 +47,6 @@ class BarcodeScannerViewModel @Inject constructor(
     fun onAction(action: ScannerActions) {
         when (action) {
             is ScannerActions.CameraPermissionChanged -> {
-//                updateAppState { it.copy(cameraPermission = action.isGranted) }
             }
 
             is ScannerActions.BarcodeScanned -> addBarcodeToHistory(action.barcode)
@@ -61,15 +64,25 @@ class BarcodeScannerViewModel @Inject constructor(
 
             is ScannerActions.DeselectAllFormats -> updateAppState { it.copy(selectedFormats = emptySet()) }
 
-            is ScannerActions.UpdateFnc1 -> updateAppState { it.copy(fnc1 = action.value) }
-            is ScannerActions.UpdateGs -> updateAppState { it.copy(gs = action.value) }
+            is ScannerActions.UpdateFnc1 -> {
+                updateAppState { it.copy(fnc1 = action.value) }
+                updateParser()
+            }
 
-            is ScannerActions.ResetSettings -> updateAppState {
-                it.copy(
-                    selectedFormats = BarcodeFormat.entries.toSet(),
-                    fnc1 = FNC1_DEFAULT,
-                    gs = GS_DEFAULT,
-                )
+            is ScannerActions.UpdateGs -> {
+                updateAppState { it.copy(gs = action.value) }
+                updateParser()
+            }
+
+            is ScannerActions.ResetSettings -> {
+                updateAppState {
+                    it.copy(
+                        selectedFormats = BarcodeFormat.entries.toSet(),
+                        fnc1 = FNC1_DEFAULT,
+                        gs = GS_DEFAULT,
+                    )
+                }
+                updateParser()
             }
         }
 
@@ -99,33 +112,47 @@ class BarcodeScannerViewModel @Inject constructor(
 
     private fun addBarcodeToHistory(scanResult: ScanResult) {
         if (scanResult.isValid.not()) {
-            //TODO Add Error Message
             return
         }
+        val parser = getCurrentParser()
         val resultWithParsing = if (parser.isGs1Format(scanResult.rawValue)) {
-            val result = parser.parse(scanResult.rawValue)
-            when (result) {
-                is ResultKt.Success -> {
-                    result.value.barcodeValues.map { it.toUi() }
-                        .let { scanResult.copy(parseResult = it) }
-                }
-
-                is ResultKt.Failure -> {
-                    result.error.ui().let { scanResult.copy(parseError = it) }
-                }
-            }
+            parseGs1Barcode(parser, scanResult)
         } else {
             scanResult
         }
         updateAppState { it.copy(scannedBarcodes = it.scannedBarcodes + resultWithParsing) }
     }
 
-    fun getImageAnalyzer(onScanComplete: (String) -> Unit) = imageAnalyzer.apply {
-        barcodeFormats = _state.value.selectedFormats
-        // Note: Analyzer's internal format configuration is static after initialization in current implementation.
+    private fun getCurrentParser(): GS1Scanner {
+        if (parser == null) {
+            updateParser()
+        }
+        return parser!!
+    }
+
+    private fun updateParser() {
+        parser = parserFactory.getParser(fnc1 = _state.value.fnc1, gs = _state.value.gs).orThrow()
+    }
+
+    private fun parseGs1Barcode(parser: GS1Scanner, scanResult: ScanResult): ScanResult {
+        val result = parser.parse(scanResult.rawValue)
+        return when (result) {
+            is ResultKt.Success -> {
+                result.value.barcodeValues.map { it.toUi() }
+                    .let { scanResult.copy(parseResult = it) }
+            }
+
+            is ResultKt.Failure -> {
+                result.error.ui().let { scanResult.copy(parseError = it) }
+            }
+        }
+    }
+
+    fun getImageAnalyzer(onScanComplete: (String) -> Unit) = analyzerFactory.createAnalyzer(
+        barcodeFormats = _state.value.selectedFormats,
         onBarcodeScanned = { scanResult ->
             addBarcodeToHistory(scanResult)
             onScanComplete(scanResult.id.toString())
         }
-    }
+    )
 }

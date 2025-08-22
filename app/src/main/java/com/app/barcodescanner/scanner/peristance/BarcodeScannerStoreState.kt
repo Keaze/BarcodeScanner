@@ -4,7 +4,10 @@ import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.data.ScanResult
 import com.app.barcodescanner.scanner.presentation.model.BarcodeScannerState
 import com.app.barcodescanner.scanner.presentation.model.FNC1_DEFAULT
+import com.app.barcodescanner.scanner.presentation.model.GS1ParseErrorUI
 import com.app.barcodescanner.scanner.presentation.model.GS_DEFAULT
+import com.app.barcodescanner.scanner.presentation.model.toData
+import com.app.barcodescanner.scanner.presentation.model.toStore
 import kotlinx.serialization.Serializable
 
 
@@ -34,6 +37,16 @@ fun BarcodeScannerStoreState.toAppState(): BarcodeScannerState {
     )
 }
 
-fun ScanResult.toStore() = ScanResultStore(barcodeFormat, rawValue, cleaned)
+fun ScanResult.toStore() = ScanResultStore(
+    barcodeFormat,
+    rawValue,
+    cleaned,
+    parseError?.message,
+    parseResult.map { it.toStore() })
 fun ScanResultStore.toData() =
-    ScanResult(barcodeFormat = barcodeFormat, rawValue = rawValue, cleaned = cleaned)
+    ScanResult(
+        barcodeFormat = barcodeFormat,
+        rawValue = rawValue,
+        cleaned = cleaned,
+        parseError = if (parseError == null) null else GS1ParseErrorUI(parseError),
+        parseResult = parseResult.map { it.toData() })
