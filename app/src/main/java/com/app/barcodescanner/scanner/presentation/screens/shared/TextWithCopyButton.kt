@@ -1,4 +1,4 @@
-package com.app.barcodescanner.scanner.presentation.screens.barcode_details.shared
+package com.app.barcodescanner.scanner.presentation.screens.shared
 
 import android.content.ClipData
 import androidx.compose.foundation.layout.Row

@@ -10,6 +10,8 @@ data class ScanResultUi(
     val barcodeRaw: String,
     val barcodeCleaned: String,
     val id: String = UUID.randomUUID().toString(),
+    val parseError: String? = null,
+    val parseResult: List<BarcodeValuesUi> = emptyList(),
 )
 
 
@@ -19,10 +21,9 @@ fun ScanResult.toUi(): ScanResultUi {
         id = id.toString(),
         barcodeType = barcodeFormat.name,
         barcodeRaw = rawValue,
-        barcodeCleaned = cleaned
-    )
-}
+        barcodeCleaned = cleaned,
+        parseError = parseError?.message,
+        parseResult = parseResult.map { it.toUi() }
 
-fun ScanResultUi.getBarcodeValues(): List<BarcodeValuesUi> {
-    return listOf()
+    )
 }

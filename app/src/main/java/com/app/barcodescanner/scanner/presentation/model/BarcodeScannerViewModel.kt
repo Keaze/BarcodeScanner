@@ -6,13 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.data.ScanResult
 import com.app.barcodescanner.scanner.domain.BarcodeAnalyzer
-import com.app.barcodescanner.scanner.domain.GS1Parser
 import com.app.barcodescanner.scanner.peristance.BarcodeScannerStateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.app.gs1parser.GS1Scanner
+import org.app.utils.ResultKt
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +27,7 @@ class BarcodeScannerViewModel @Inject constructor(
     )
     val state: StateFlow<BarcodeScannerState> = _state.asStateFlow()
     val imageAnalyzer = BarcodeAnalyzer()
-    val parser = GS1Parser()
+    val parser = GS1Scanner.getDefaultParser().orThrow()
 
     init {
         viewModelScope.launch {
@@ -101,7 +102,22 @@ class BarcodeScannerViewModel @Inject constructor(
             //TODO Add Error Message
             return
         }
-        updateAppState { it.copy(scannedBarcodes = it.scannedBarcodes + scanResult) }
+        val resultWithParsing = if (parser.isGs1Format(scanResult.rawValue)) {
+            val result = parser.parse(scanResult.rawValue)
+            when (result) {
+                is ResultKt.Success -> {
+                    result.value.barcodeValues.map { it.toUi() }
+                        .let { scanResult.copy(parseResult = it) }
+                }
+
+                is ResultKt.Failure -> {
+                    result.error.ui().let { scanResult.copy(parseError = it) }
+                }
+            }
+        } else {
+            scanResult
+        }
+        updateAppState { it.copy(scannedBarcodes = it.scannedBarcodes + resultWithParsing) }
     }
 
     fun getImageAnalyzer(onScanComplete: (String) -> Unit) = imageAnalyzer.apply {

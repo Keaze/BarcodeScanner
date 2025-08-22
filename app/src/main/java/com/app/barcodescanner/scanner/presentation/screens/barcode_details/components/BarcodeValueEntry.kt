@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.barcodescanner.scanner.presentation.screens.barcode_details.shared.TextWithCopyButton
+import com.app.barcodescanner.scanner.presentation.screens.shared.TextWithCopyButton
 import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 
 @Composable

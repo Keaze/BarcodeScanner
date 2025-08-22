@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.sp
 import com.app.barcodescanner.scanner.data.BarcodeFormat
 import com.app.barcodescanner.scanner.presentation.model.ScanResultUi
 import com.app.barcodescanner.scanner.presentation.model.ScannerActions
-import com.app.barcodescanner.scanner.presentation.model.getBarcodeValues
 import com.app.barcodescanner.scanner.presentation.screens.barcode_details.components.BarcodeDetailBottomBar
 import com.app.barcodescanner.scanner.presentation.screens.barcode_details.components.BarcodeDetailValueList
 import com.app.barcodescanner.scanner.presentation.screens.barcode_details.components.BarcodeInfo
@@ -59,9 +58,15 @@ fun BarcodeDetailsScreen(
                             BarcodeInfo("Format", barcode.barcodeType)
                             BarcodeInfo("Raw", barcode.barcodeRaw)
                             BarcodeInfo("Clean", barcode.barcodeCleaned)
+                            barcode.parseError?.let {
+                                BarcodeInfo("Parse Error", it)
+                            }
                         }
                     }
-                    BarcodeDetailValueList(barcode.getBarcodeValues())
+
+                    if (barcode.parseResult.isNotEmpty()) {
+                        BarcodeDetailValueList(barcode.parseResult)
+                    }
                 }
             }
         } else {
