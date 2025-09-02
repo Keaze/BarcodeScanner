@@ -1,4 +1,3 @@
-import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import java.util.Properties
 
 plugins {
@@ -30,12 +29,12 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    applicationVariants.all {
-        outputs.all {
-            val output = this as ApkVariantOutputImpl
-            output.outputFileName = "BarcodeScanner.apk"
-        }
-    }
+//    applicationVariants.all {
+//        outputs.all {
+//            val output = this as ApkVariantOutputImpl
+//            output.outputFileName = "BarcodeScanner.apk"
+//        }
+//    }
     signingConfigs {
         create("release") {
             // Load local.properties
