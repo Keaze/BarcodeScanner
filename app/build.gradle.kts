@@ -25,7 +25,7 @@ android {
     applicationVariants.all {
         outputs.all {
             val output = this as ApkVariantOutputImpl
-            output.outputFileName = "BarcodeScanner-${versionName}-${buildType.name}.apk"
+            output.outputFileName = "BarcodeScanner.apk"
         }
     }
 
