@@ -120,7 +120,7 @@ jobs:
       - name: Rename artifacts
         run: |
           cd app/build/outputs/apk/release/
-          mv app-release.apk BarcodeScanner-${{ steps.version.outputs.VERSION_NAME }.apk
+          mv app-release.apk BarcodeScanner-${{ steps.version.outputs.VERSION_NAME }}.apk
       #          cd ../../bundle/release/
       #          mv app-release.aab app-${{ steps.version.outputs.VERSION_NAME }}-release.aab
 
