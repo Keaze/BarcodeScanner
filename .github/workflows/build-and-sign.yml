@@ -138,7 +138,7 @@ jobs:
           retention-days: 90
 
       - name: Upload AAB Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-aab-${{ steps.version.outputs.VERSION_NAME }}
           path: |
