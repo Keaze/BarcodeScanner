@@ -1,4 +1,5 @@
 import com.android.build.gradle.internal.api.ApkVariantOutputImpl
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -17,8 +18,15 @@ android {
         applicationId = "com.app.barcodescanner"
         minSdk = 25
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.5"
+        // Dynamic versioning from CI/CD or fallback to defaults
+        val versionCodeFromCI =
+            project.findProperty("version.code") as String? ?: System.getenv("VERSION_CODE")
+        val versionNameFromCI =
+            project.findProperty("version.name") as String? ?: System.getenv("VERSION_NAME")
+
+        versionCode = versionCodeFromCI?.toIntOrNull() ?: 1
+        versionName = versionNameFromCI ?: "1.0.0"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -28,15 +36,38 @@ android {
             output.outputFileName = "BarcodeScanner.apk"
         }
     }
+    signingConfigs {
+        create("release") {
+            // Load local.properties
+            val localProperties = Properties()
+            val localPropertiesFile = rootProject.file("local.properties")
+            if (localPropertiesFile.exists()) {
+                localProperties.load(localPropertiesFile.inputStream())
+            }
 
+            // Helper function to get property from local.properties, gradle.properties, or environment
+            fun getProperty(key: String): String? {
+                return localProperties.getProperty(key)
+                    ?: project.findProperty(key) as String?
+                    ?: System.getenv(key)
+            }
+
+            val keystoreFile = getProperty("KEYSTORE_FILE") ?: "release-keystore.jks"
+            storeFile = file(keystoreFile)
+            storePassword = getProperty("KEYSTORE_PASSWORD")
+            keyAlias = getProperty("KEY_ALIAS")
+            keyPassword = getProperty("KEY_PASSWORD")
+        }
+    }
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
