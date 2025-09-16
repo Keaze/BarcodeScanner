@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -39,7 +40,6 @@ import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScannerSettingsDrawer(
-    modifier: Modifier = Modifier,
     selectedFormats: Set<BarcodeFormat> = BarcodeFormat.entries.toSet(),
     fnc1: String = "",
     gs: String = "",
@@ -50,6 +50,7 @@ fun ScannerSettingsDrawer(
         modifier = Modifier
             .padding(16.dp)
             .padding(top = 32.dp)
+            .navigationBarsPadding()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {

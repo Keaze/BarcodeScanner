@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">BarcodeScanner</string>
 
     <!-- General Titles -->
@@ -19,8 +19,8 @@
 
     <!-- Settings -->
     <string name="barcode_formats">Barcode Formats</string>
-    <string name="fnc1_label">FNC1</string>
-    <string name="enter_fnc1">Enter FNC1</string>
+    <string name="fnc1_label" tools:ignore="Typos">FNC1</string>
+    <string name="enter_fnc1" tools:ignore="Typos">Enter FNC1</string>
     <string name="gs_label">GS</string>
     <string name="enter_gs">Enter GS</string>
 
@@ -37,4 +37,8 @@
     <!-- Misc -->
     <string name="no_barcode_selected">No barcode selected</string>
     <string name="copy">Copy</string>
+    <string name="exit_app_title">Exit App?</string>
+    <string name="exit_app_message">Are you sure you want to exit?</string>
+    <string name="exit_app_button">Exit</string>
+    <string name="cancel_button">Cancel</string>
 </resources>

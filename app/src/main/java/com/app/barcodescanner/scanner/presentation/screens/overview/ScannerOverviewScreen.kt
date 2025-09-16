@@ -1,18 +1,26 @@
 package com.app.barcodescanner.scanner.presentation.screens.overview
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -23,6 +31,7 @@ import com.app.barcodescanner.scanner.presentation.model.ScannerActions
 import com.app.barcodescanner.scanner.presentation.screens.overview.components.ScanOverviewBottomBar
 import com.app.barcodescanner.scanner.presentation.screens.overview.components.ScanResultList
 import com.app.barcodescanner.scanner.presentation.screens.overview.components.ScannerSettingsDrawer
+import com.app.barcodescanner.scanner.presentation.screens.shared.exitApp
 import com.app.barcodescanner.ui.theme.BarcodeScannerTheme
 import kotlinx.coroutines.launch
 
@@ -37,13 +46,41 @@ fun ScannerOverviewScreen(
     gs: String = "",
     onAction: (ScannerActions) -> Unit = {},
 ) {
+    val context = LocalContext.current
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    var showExitDialog by remember { mutableStateOf(false) }
+    BackHandler {
+        if (drawerState.isOpen) {
+            scope.launch { drawerState.close() }
+        } else {
+            showExitDialog = true
+        }
+    }
+
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = { Text(stringResource(R.string.exit_app_title)) },
+            text = { Text(stringResource(R.string.exit_app_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    exitApp(context, background = false)
+                }) {
+                    Text(stringResource(R.string.exit_app_button))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showExitDialog = false }) {
+                    Text(stringResource(R.string.cancel_button))
+                }
+            }
+        )
+    }
 
     ModalNavigationDrawer(
         drawerContent = {
             ScannerSettingsDrawer(
-                modifier = modifier,
                 onAction = onAction,
                 selectedFormats = selectedFormats,
                 fnc1 = fnc1,

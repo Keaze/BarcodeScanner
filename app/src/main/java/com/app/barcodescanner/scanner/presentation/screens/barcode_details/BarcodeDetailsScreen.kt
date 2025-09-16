@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
@@ -53,7 +54,11 @@ fun BarcodeDetailsScreen(
     ) { innerPadding ->
 
         if (barcode != null) {
-            SelectionContainer(Modifier.fillMaxSize()) {
+            SelectionContainer(
+                Modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding()
+            ) {
                 Column(modifier.padding(innerPadding)) {
                     Box(modifier = Modifier.padding(16.dp)) {
                         Column {
